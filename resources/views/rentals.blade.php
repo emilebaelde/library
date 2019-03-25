@@ -109,12 +109,21 @@
                         <td>{{$rental->rental_start}}</td>
                         <td>{{$rental->rental_end}}</td>
                         <td>{{$rental->rental_back}}</td>
+                        <td>
+                            @if ($rental->stock->available == 0)
+                            <input type="hidden" name="available" value="1">
+                            {!! Form::open(['method'=>'PATCH', 'action'=>['FrontendController@returnBook', $rental->stock->id]]) !!}
+                            {!! Form::submit('Bring Back',['class'=>'btn btn-info btn-sm']) !!}
+                            {!! Form::close() !!}
+                                @endif
+                        </td>
                     </tr>
                 @endforeach
             @endif
-
+            <td><a href="{{action('FrontendController@downloadPDF')}}">PDF</a></td>
             </tbody>
         </table>
+
         <div class="row">
             <div class="col-12">
                 {{$rentals->links()}}

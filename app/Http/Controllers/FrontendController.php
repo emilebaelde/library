@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Rental;
 use App\Stock;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\PDF;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 
 class FrontendController extends Controller
@@ -79,34 +81,31 @@ class FrontendController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd($id);
-        $test=Stock::findOrFail($id);
+        $user_id=Auth::id();
+        $user_rentals= Rental::where('user_id', '=', $user_id)->where('rental_back', '=', null)->count();
+        if ($user_rentals<7){
+            $test=Stock::findOrFail($id);
 
-        if ($test['available']==1){
-            //stock part
-            $test['available']=0;
+            if ($test['available']==1) {
+                //stock part
+                $test['available'] = 0;
 
-            //rental part
-            $rental=[
-                'user_id'=>Auth::id(),
-                'stock_id'=>$id,
-                'rental_start'=>date("Y-m-d"),
-                'rental_end'=>date("Y-m-d",strtotime("+2 week")),
-                'rental_back'=>Null,
-            ];
+                //rental part
+                $rental = [
+                    'user_id' => Auth::id(),
+                    'stock_id' => $id,
+                    'rental_start' => date("Y-m-d"),
+                    'rental_end' => date("Y-m-d", strtotime("+2 week")),
+                    'rental_back' => Null,
+                ];
 
-            Rental::create($rental);
-            $test ->update();
-        }else{
-            $rental=Rental::where("stock_id","$id")->first(); //get() werkt hier niet?
-            $test['available']=1;
-
-            $rental['rental_back']=date("Y-m-d");
-
-            $rental->update();
-            $test ->update();
-
+                Rental::create($rental);
+                $test->update();
+            }else{
+                echo "you already reached the max number of rentals";
+            }
         }
+
 
         return redirect('/');
     }
@@ -137,5 +136,26 @@ class FrontendController extends Controller
         $rentals = Rental::where('user_id', '=', $user)->where('rental_back', '!=', null)->paginate(7);
 
         return view('history', compact('rentals', 'user'));
+    }
+    public function returnBook($id)
+    {
+        $stock=Stock::findOrFail($id);
+        $rental=Rental::where("stock_id","$id")->where("rental_back",null)->first(); //get() werkt hier niet?
+        $stock['available']=1;
+
+        $rental['rental_back']=date("Y-m-d");
+
+        $rental->update();
+        $stock ->update();
+        return redirect('/');
+    }
+    public function downloadPDF()
+    {
+        $user = Auth::id();
+
+        $rentals = Rental::where('user_id', '=', $user)->where('rental_back', '=', null)->paginate(7);
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadView('pdf', compact('rentals', 'user'));
+        return $pdf->download('invoice.pdf');
     }
 }

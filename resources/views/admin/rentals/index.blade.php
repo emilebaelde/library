@@ -16,6 +16,7 @@
         <tbody>
             @if($rentals)
                 @foreach($rentals as $rental)
+                    <?php dd($rental) ?>
                     <tr>
                         <td>{{$rental->id}}</td>
                         <td>{{$rental->user->first_name. ' '. $rental->user->last_name}}</td>

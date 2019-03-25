@@ -12,14 +12,13 @@
 */
 
 /**FRONTEND**/
-Route::get('/', function () {
-
-    return view('welcome');
-});
-Route::resource('/', 'FrontendController');
-Route::get('/rentals', [ 'uses'=>'FrontendController@myRentals']);
-Route::get('/rentals/history', [ 'uses'=>'FrontendController@history']);
-
+Route::get('/', 'FrontendController@index');
+Route::patch('rentals/{id}', 'FrontendController@update');
+Route::patch('/{id}', 'FrontendController@returnBook');
+//Route::resource('/', 'FrontendController');
+Route::get('/rentals', [ 'uses'=>'FrontendController@myRentals'])->middleware('auth');
+Route::get('/rentals/history', [ 'uses'=>'FrontendController@history'])->middleware('auth');
+Route::get('/downloadPDF','FrontendController@downloadPDF')->middleware('auth');
 
 
 

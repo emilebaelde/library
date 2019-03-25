@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use phpDocumentor\Reflection\Types\Null_;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AdminStockController extends Controller
 {
@@ -50,8 +51,13 @@ class AdminStockController extends Controller
         $i = (int)$i['quantity'];
         while($i!=0){
             $input = $request->only('book_id');
-            $input['barcode']='123456789';
             Stock::create($input);
+
+
+            $last_stock= Stock::orderBy('id', 'desc')->first();
+
+            $input['barcode']='http://localhost/library/public/admin/stock/'.$last_stock->id;
+            $last_stock->update($input);
             $i--;
         }
 
@@ -66,7 +72,9 @@ class AdminStockController extends Controller
      */
     public function show($id)
     {
-        //
+        $stock = Stock::findOrFail($id);
+
+        return view('admin.stock.show', compact('stock'));
     }
 
     /**

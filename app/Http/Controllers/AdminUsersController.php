@@ -9,6 +9,7 @@ use App\Photo;
 use App\Role;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
@@ -59,8 +60,13 @@ class AdminUsersController extends Controller
         $input_user = $request->only(['first_name','last_name','password', 'email', 'nin', 'password','role_id']); // is hetzelfde als hierboven maar in 1 lijn enkel password word hieronder nog gehasht
         $input_address = $request->only(['city','street', 'number','bus_number', 'postal_code', 'country']);
         $input_user['password']= Hash::make($request['password']);
-        User::create($input_user);
+
         Address::create($input_address);
+        $last_adress= DB::table('addresses')->orderBy('id', 'desc')->first();
+        $input_user['address_id']=$last_adress->id;
+
+        User::create($input_user);
+
         return redirect('/admin/users');
 
     }

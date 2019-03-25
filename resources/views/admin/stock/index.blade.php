@@ -18,7 +18,14 @@
                 <tr>
                     <td>{{$stock->id}}</td>
                     <td>{{$stock->book->title}}</td>
-                    <td><a href="{{route('stock.edit', $stock->id)}}">{{$stock->barcode}}</a></td>
+                    <td>
+
+
+                        {!! QrCode::margin(0)->size(100)->generate($stock->barcode); !!}
+
+
+
+                    </td>
                     <td>{{$stock->available == true ?'Available' : 'Not Available' }}</td>
                     <td>
                         @if ($stock->available == 1)
@@ -32,6 +39,7 @@
                             {!! Form::submit('Bring Back',['class'=>'btn btn-info btn-sm']) !!}
                             {!! Form::close() !!}
                         @endif
+                            <a href="{{route('stock.show', $stock->id)}}" class="btn btn-primary">Show</a>
                     </td>
                     <td>
 

@@ -127,15 +127,9 @@
                                             {!! Form::open(['method'=>'PATCH', 'action'=>['FrontendController@update', $stock->id]]) !!}
                                             {!! Form::submit('Rent',['class'=>'btn btn-primary btn-sm']) !!}
                                             {!! Form::close() !!}
-                                        @else
-                                            <input type="hidden" name="available" value="1">
-                                            {!! Form::open(['method'=>'PATCH', 'action'=>['FrontendController@update', $stock->id]]) !!}
-                                            {!! Form::submit('Bring Back',['class'=>'btn btn-info btn-sm']) !!}
-                                            {!! Form::close() !!}
-                                        @endif
+                                            @endif
                                     </td>
                                     @endauth
-
 
 
                             </tr>

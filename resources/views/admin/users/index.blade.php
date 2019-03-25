@@ -24,7 +24,7 @@
                         <td>{{$user->email}}</td>
                         <td>{{$user->nin}}</td>
                         <td>{{$user->role_id ? $user->role->name : 'User without role'}}</td>
-                        <td>{{$user->address_id ? $user->address->street . ' ' .$user->address->number . ' '. $user->address->postal_code . ' ' .$user->address->city .' '.$user->address->country : 'User without role'}}</td>
+                        <td>{{$user->address_id ? $user->address->street . ' ' .$user->address->number . ' '. $user->address->postal_code . ' ' .$user->address->city .' '.$user->address->country : 'User without Address'}}</td>
 
                         <td>{{$user->is_active == 1 ? 'Active' : 'Not Active'}}</td>
                         <td>{{$user->created_at}}</td>
