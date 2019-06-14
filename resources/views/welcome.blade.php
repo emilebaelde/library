@@ -2,11 +2,10 @@
 
 @section('content')
     <div class="content mb-5">
-
+        @include('includes.search',['url'=>''])
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    @include('includes.search',['url'=>''])
                     @if($stocks)
                         @foreach($stocks as $stock)
 
