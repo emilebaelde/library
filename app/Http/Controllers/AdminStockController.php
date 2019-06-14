@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Book;
+use App\Http\Requests\StockRequest;
 use App\Rental;
 use App\Stock;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class AdminStockController extends Controller
      */
     public function index()
     {
-        $stocks= Stock::paginate(10);
+        $stocks = Stock::paginate(10);
 
         //admin/users/index.blade.php
         return view('admin.stock.index', compact('stocks'));
@@ -41,22 +42,22 @@ class AdminStockController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StockRequest $request)
     {
 
-        $i=$request->only('quantity');
+        $i = $request->only('quantity');
         $i = (int)$i['quantity'];
-        while($i!=0){
+        while ($i != 0) {
             $input = $request->only('book_id');
             Stock::create($input);
 
 
-            $last_stock= Stock::orderBy('id', 'desc')->first();
+            $last_stock = Stock::orderBy('id', 'desc')->first();
 
-            $input['barcode']='http://localhost/library/public/admin/stock/'.$last_stock->id;
+            $input['barcode'] = 'http://localhost/library/public/admin/stock/' . $last_stock->id;
             $last_stock->update($input);
             $i--;
         }
@@ -67,7 +68,7 @@ class AdminStockController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -80,7 +81,7 @@ class AdminStockController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -90,37 +91,37 @@ class AdminStockController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update($id)
     {
-        $test=Stock::findOrFail($id);
+        $test = Stock::findOrFail($id);
 
-        if ($test['available']==1){
+        if ($test['available'] == 1) {
             //stock part
-            $test['available']=0;
+            $test['available'] = 0;
 
             //rental part
-            $rental=[
-                'user_id'=>Auth::id(),
-                'stock_id'=>$id,
-                'rental_start'=>date("Y-m-d"),
-                'rental_end'=>date("Y-m-d",strtotime("+2 week")),
-                'rental_back'=>Null,
+            $rental = [
+                'user_id' => Auth::id(),
+                'stock_id' => $id,
+                'rental_start' => date("Y-m-d"),
+                'rental_end' => date("Y-m-d", strtotime("+2 week")),
+                'rental_back' => Null,
             ];
 
             Rental::create($rental);
-            $test ->update();
-        }else{
-            $rental=Rental::where("stock_id","$id")->first(); //get() werkt hier niet?
-            $test['available']=1;
+            $test->update();
+        } else {
+            $rental = Rental::where("stock_id", "$id")->first(); //get() werkt hier niet?
+            $test['available'] = 1;
 
-            $rental['rental_back']=date("Y-m-d");
+            $rental['rental_back'] = date("Y-m-d");
 
             $rental->update();
-            $test ->update();
+            $test->update();
 
         }
 
@@ -131,12 +132,12 @@ class AdminStockController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        $stock=Stock::findOrFail($id);
+        $stock = Stock::findOrFail($id);
         $stock->delete();
         Session::flash('deleted_user', 'The user is deleted');
         return redirect('/admin/stock');

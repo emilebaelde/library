@@ -5,7 +5,7 @@
 
     <div class="form-group">
         {!! Form::label('book_id', 'Book:') !!}
-        {!! Form::select('book_id', [' '=>'Choose Option'] + $books,null, ['class' => 'form-control']) !!}
+        {!! Form::select('book_id', [' '=>'Choose Option'] + $books,null, ['class' => 'form-control'],  ['required']) !!}
     </div>
     <div class="form-group">
         {!! Form::label('quantity', 'Quantity:') !!}
