@@ -23,7 +23,7 @@ class FrontendController extends Controller
             ->leftJoin('authors', 'authors.id', '=', 'books.author_id')
             ->select('stocks.*', 'authors.name', 'books.title', 'books.isbn', 'books.year', 'books.edition', 'books.description', 'books.photo_id')
             ->where('stocks.available', "=", 1)
-            ->where('books.title', 'like', '%' . $search . '%')->orWhere('authors.name', 'like', '%' . $search . '%')->orWhere('books.isbn', 'like', '%' . $search . '%')->orWhere('books.description', 'like', '%' . $search . '%')//werkt nog niet omdat de name uit andere table komt
+            ->where('books.title', 'like', '%' . $search . '%')->orWhere('authors.name', 'like', '%' . $search . '%')->orWhere('books.isbn', 'like', '%' . $search . '%')->orWhere('books.description', 'like', '%' . $search . '%')
             ->orderBy('id')
             ->paginate(20);
         return view('welcome', compact('stocks'));
@@ -42,7 +42,7 @@ class FrontendController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -53,7 +53,7 @@ class FrontendController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -64,7 +64,7 @@ class FrontendController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -75,18 +75,18 @@ class FrontendController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        $user_id=Auth::id();
-        $user_rentals= Rental::where('user_id', '=', $user_id)->where('rental_back', '=', null)->count();
-        if ($user_rentals<7){
-            $test=Stock::findOrFail($id);
+        $user_id = Auth::id();
+        $user_rentals = Rental::where('user_id', '=', $user_id)->where('rental_back', '=', null)->count();
+        if ($user_rentals < 7) {
+            $test = Stock::findOrFail($id);
 
-            if ($test['available']==1) {
+            if ($test['available'] == 1) {
                 //stock part
                 $test['available'] = 0;
 
@@ -101,7 +101,7 @@ class FrontendController extends Controller
 
                 Rental::create($rental);
                 $test->update();
-            }else{
+            } else {
                 echo "you already reached the max number of rentals";
             }
         }
@@ -113,17 +113,17 @@ class FrontendController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
     }
+
     public function myRentals()
     {
         $user = Auth::id();
-
         $rentals = Rental::where('user_id', '=', $user)->where('rental_back', '=', null)->paginate(7);
 
         return view('rentals', compact('rentals', 'user'));
@@ -137,22 +137,23 @@ class FrontendController extends Controller
 
         return view('history', compact('rentals', 'user'));
     }
+
     public function returnBook($id)
     {
-        $stock=Stock::findOrFail($id);
-        $rental=Rental::where("stock_id","$id")->where("rental_back",null)->first(); //get() werkt hier niet?
-        $stock['available']=1;
+        $stock = Stock::findOrFail($id);
+        $rental = Rental::where("stock_id", "$id")->where("rental_back", null)->first(); //get() werkt hier niet?
+        $stock['available'] = 1;
 
-        $rental['rental_back']=date("Y-m-d");
+        $rental['rental_back'] = date("Y-m-d");
 
         $rental->update();
-        $stock ->update();
-        return redirect('/');
+        $stock->update();
+        return redirect()->back();
     }
+
     public function downloadPDF()
     {
         $user = Auth::id();
-
         $rentals = Rental::where('user_id', '=', $user)->where('rental_back', '=', null)->paginate(7);
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadView('pdf', compact('rentals', 'user'));

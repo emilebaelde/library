@@ -1,8 +1,11 @@
 @extends('layouts.admin')
 @section('content')
     <h1>Edit Book</h1>
+    <div class="col-md-3">
+        <img class="img-responsive" src="{{$book->photo ? asset($book->photo->file) : 'http://place-hold.it/400x400'}}"
+             alt="">
+    </div>
     {!! Form::model($book,['method' => 'PATCH', 'action' =>[ 'AdminBooksController@update', $book->id], 'files'=>true]) !!}
-
     <div class="form-group">
         {!! Form::label('author_id', 'Author:') !!}
         {!! Form::select('author_id', [''=>'Choose options'] + $authors,null, ['class'=>'form-control']) !!}
@@ -35,7 +38,7 @@
     </div>
 
     <div class="form-group">
-        {!! Form::submit('Create Book', ['class' => 'btn btn-primary']) !!}
+        {!! Form::submit('Edit Book', ['class' => 'btn btn-primary']) !!}
     </div>
     {!! Form::close() !!}
 

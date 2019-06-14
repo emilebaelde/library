@@ -24,9 +24,8 @@
     <link href="{{asset('css/morris.css')}}" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-
-
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 
 
 </head>
@@ -103,9 +102,6 @@
                         <ul class="nav nav-second-level">
                             <li>
                                 <a href="{{route('rentals.index')}}">All rental</a>
-                            </li>
-                            <li>
-                                <a href="{{route('rentals.create')}}">Create rental</a>
                             </li>
                         </ul>
                         <!-- /.nav-second-level -->

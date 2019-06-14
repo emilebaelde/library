@@ -14,7 +14,7 @@ class CreateStocksTable extends Migration
     public function up()
     {
         Schema::create('stocks', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->increments('id');
             $table->integer('book_id')->index()->unsigned()->nullable();
             $table->text('barcode')->nullable();
             $table->boolean('available')->default(1);

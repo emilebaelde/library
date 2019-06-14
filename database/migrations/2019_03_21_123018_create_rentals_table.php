@@ -14,7 +14,7 @@ class CreateRentalsTable extends Migration
     public function up()
     {
         Schema::create('rentals', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->increments('id');
             $table->integer('stock_id')->index()->unsigned()->nullable();
             $table->integer('user_id')->index()->unsigned()->nullable();
             $table->date('rental_start');
